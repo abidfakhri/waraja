@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Waraja – Agent Pelatih Wawancara Kerja Berbasis Metode STAR" />
+  <title>Waraja – Pelatih Wawancara STAR</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <!-- ===== LAYAR 1: AWAL ===== -->
+  <main id="screen-start" class="screen screen--active" role="main" aria-labelledby="start-heading">
+    <div class="card start-card">
+      <div class="brand">
+        <span class="brand__icon" aria-hidden="true">🎯</span>
+        <h1 id="start-heading" class="brand__name">Waraja</h1>
+        <p class="brand__tagline">Agent Pelatih Wawancara Berbasis Metode STAR</p>
+      </div>
+
+      <form id="start-form" novalidate>
+        <div class="field-group">
+          <label class="field-label" for="select-position">Posisi yang Dilamar</label>
+          <div class="select-wrapper">
+            <select id="select-position" name="position" required aria-required="true">
+              <option value="web-developer">Web Developer</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="field-group">
+          <label class="field-label">Kategori Pertanyaan</label>
+          <div class="category-grid" role="group" aria-label="Pilih kategori pertanyaan">
+            <label class="category-card">
+              <input type="radio" name="category" value="perilaku" checked />
+              <span class="category-card__icon" aria-hidden="true">🤝</span>
+              <span class="category-card__label">Perilaku</span>
+              <span class="category-card__desc">Soft skill & kepribadian</span>
+            </label>
+            <label class="category-card">
+              <input type="radio" name="category" value="teknis" />
+              <span class="category-card__icon" aria-hidden="true">💻</span>
+              <span class="category-card__label">Teknis</span>
+              <span class="category-card__desc">Coding & problem solving</span>
+            </label>
+            <label class="category-card">
+              <input type="radio" name="category" value="hr" />
+              <span class="category-card__icon" aria-hidden="true">🏢</span>
+              <span class="category-card__label">HR / Umum</span>
+              <span class="category-card__desc">Motivasi & karier</span>
+            </label>
+          </div>
+        </div>
+
+        <button type="submit" class="btn btn--primary btn--full" id="btn-start">
+          Mulai Sesi Wawancara
+        </button>
+      </form>
+
+      <!-- Riwayat Sesi -->
+      <section id="history-section" class="history-section" aria-label="Riwayat sesi sebelumnya" hidden>
+        <h2 class="history-section__title">Riwayat Sesi</h2>
+        <ul id="history-list" class="history-list" aria-label="Daftar sesi"></ul>
+        <button type="button" class="btn btn--ghost btn--sm" id="btn-clear-history">
+          Hapus Semua Riwayat
+        </button>
+      </section>
+    </div>
+  </main>
+
+  <!-- ===== LAYAR 2: CHAT ===== -->
+  <main id="screen-chat" class="screen" role="main" aria-labelledby="chat-heading" aria-live="polite">
+    <div class="chat-layout">
+      <header class="chat-header" role="banner">
+        <button type="button" class="btn btn--ghost btn--icon" id="btn-back" aria-label="Kembali ke layar awal">
+          <span aria-hidden="true">←</span>
+        </button>
+        <div class="chat-header__info">
+          <h2 id="chat-heading" class="chat-header__title">Waraja</h2>
+          <p class="chat-header__sub" id="chat-subtitle">Pewawancara AI</p>
+        </div>
+        <div class="progress-wrap" aria-label="Progres pertanyaan">
+          <span id="progress-text" class="progress-text">0 / 10</span>
+          <div class="progress-bar" role="progressbar" aria-valuemin="0" aria-valuemax="10" aria-valuenow="0">
+            <div class="progress-bar__fill" id="progress-fill"></div>
+          </div>
+        </div>
+      </header>
+
+      <section class="chat-window" aria-label="Percakapan">
+        <ul id="chat-messages" class="chat-messages" aria-live="polite" aria-label="Pesan percakapan"></ul>
+      </section>
+
+      <footer class="chat-footer">
+        <div id="feedback-panel" class="feedback-panel" hidden aria-live="polite"></div>
+        <form id="chat-form" class="input-row" novalidate>
+          <label class="sr-only" for="user-input">Ketik jawaban Anda</label>
+          <textarea
+            id="user-input"
+            class="input-textarea"
+            placeholder="Ketik jawaban Anda di sini…"
+            rows="2"
+            maxlength="1000"
+            aria-required="true"
+          ></textarea>
+          <button type="submit" class="btn btn--primary btn--icon btn--send" id="btn-send" aria-label="Kirim jawaban">
+            <span aria-hidden="true">➤</span>
+          </button>
+        </form>
+        <p id="input-warning" class="input-warning" role="alert" aria-live="assertive" hidden></p>
+      </footer>
+    </div>
+  </main>
+
+  <!-- ===== LAYAR 3: RINGKASAN ===== -->
+  <main id="screen-summary" class="screen" role="main" aria-labelledby="summary-heading">
+    <div class="card summary-card">
+      <h2 id="summary-heading" class="summary-heading">Ringkasan Sesi</h2>
+      <div class="total-score-wrap">
+        <div class="total-score" id="total-score-display" aria-label="Skor total">0</div>
+        <p class="total-score__label">Skor Rata-Rata</p>
+      </div>
+
+      <!-- Grafik batang CSS per aspek STAR -->
+      <section class="star-chart" aria-label="Grafik aspek STAR">
+        <h3 class="star-chart__title">Nilai per Aspek STAR</h3>
+        <div class="bar-chart" role="img" aria-label="Grafik batang STAR">
+          <div class="bar-group" id="bar-situation">
+            <div class="bar-group__label">Situation / Task</div>
+            <div class="bar-group__track">
+              <div class="bar-group__fill" id="fill-situation" style="--pct:0"></div>
+            </div>
+            <div class="bar-group__val" id="val-situation">0%</div>
+          </div>
+          <div class="bar-group" id="bar-action">
+            <div class="bar-group__label">Action</div>
+            <div class="bar-group__track">
+              <div class="bar-group__fill" id="fill-action" style="--pct:0"></div>
+            </div>
+            <div class="bar-group__val" id="val-action">0%</div>
+          </div>
+          <div class="bar-group" id="bar-result">
+            <div class="bar-group__label">Result</div>
+            <div class="bar-group__track">
+              <div class="bar-group__fill" id="fill-result" style="--pct:0"></div>
+            </div>
+            <div class="bar-group__val" id="val-result">0%</div>
+          </div>
+          <div class="bar-group" id="bar-length">
+            <div class="bar-group__label">Kelengkapan</div>
+            <div class="bar-group__track">
+              <div class="bar-group__fill" id="fill-length" style="--pct:0"></div>
+            </div>
+            <div class="bar-group__val" id="val-length">0%</div>
+          </div>
+        </div>
+      </section>
+
+      <section class="answer-log" aria-label="Log jawaban">
+        <h3 class="answer-log__title">Detail Tiap Jawaban</h3>
+        <ol id="answer-log-list" class="answer-log__list"></ol>
+      </section>
+
+      <div class="summary-actions">
+        <button type="button" class="btn btn--primary btn--full" id="btn-retry">
+          🔄 Coba Lagi
+        </button>
+        <button type="button" class="btn btn--ghost btn--full" id="btn-home">
+          🏠 Kembali ke Beranda
+        </button>
+      </div>
+    </div>
+  </main>
+
+  <script src="script.js"></script>
+</body>
+</html>
