@@ -41,12 +41,24 @@
 
 - Jawaban bagus (ada konteks, aksi, hasil terukur) mendapat skor tinggi.
 - Jawaban asal ("ya gitu deh") mendapat skor rendah beserta saran.
-- Kalimat yang sama untuk pertanyaan berbeda menghasilkan skor berbeda.
-- Kalimat yang diulang-ulang mendapat penalti.
-- Kartu umpan balik tetap terlihat di chat.
+- Kartu umpan balik tetap terlihat di chat dengan rincian skor per aspek.
 - Berjalan hanya dengan membuka `index.html`.
 
 ## 6. RIWAYAT REVISI
 
 - (V1) Versi awal. Masalah : kartu skor cepat hilang, skor sama untuk kalimat yang sama (tidak sadar pertanyaan, tidak mendeteksi pengulangan), UI kecil dan terpusat.
-- (V2) Versi 2 revisi Layer 2 : kartu umpan balik menetap, komponen relevansi, penalti pengulangan, rincian skor per aspek.
+- (V2) Revisi Layer 2 : kartu umpan balik menetap, komponen relevansi, penalti pengulangan, rincian skor per aspek.
+- Hasil evaluasi V2 : relevansi belum konsisten (0% pada jawaban yang relevan, 100% pada pertanyaan lain untuk jawaban yang sama) karena daftar kata kunci per pertanyaan terlalu sempit atau terlalu umum. Perbaikan relevansi dan revisi tampilan (Layer 3) tidak dilanjutkan karena keterbatasan token, dicatat sebagai pengembangan lanjutan.
+
+## 7. KETERBATASAN
+
+- Penilaian berbasis aturan (kata kunci dan pola), tidak memahami makna kalimat.
+- Skor relevansi bergantung pada daftar kata kunci per pertanyaan dan belum akurat.
+- Tampilan belum dioptimalkan untuk layar lebar.
+- Skor adalah panduan latihan, bukan penilaian final.
+
+## 8. RENCANA PENGEMBANGAN
+
+- Perbaikan relevansi : kata kunci khas topik per pertanyaan dengan pencocokan kata utuh, dan menampilkan kata kunci terdeteksi agar penilaian transparan.
+- Revisi Layer 3 : tata letak penuh layar, font dan komponen lebih besar.
+- Peningkatan tech stack dan integrasi model bahasa (LLM) melalui backend yang aman agar penilaian memahami makna jawaban.
