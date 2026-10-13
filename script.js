@@ -5,6 +5,7 @@
  * Struktur:
  *   1. Bank Pertanyaan
  *   2. Fungsi Penilaian STAR (masing-masing terpisah)
+ *   2b. Fungsi Relevansi & Anti-Pengulangan (v2)
  *   3. Fungsi Umpan Balik
  *   4. State & Navigasi Layar
  *   5. Logika Chat
@@ -19,43 +20,138 @@
    1. BANK PERTANYAAN
    ============================================================ */
 
-/** @type {Object.<string, string[]>} */
+/**
+ * Setiap item pertanyaan kini berupa objek:
+ *   { text: string, relevantKeywords: string[] }
+ * relevantKeywords digunakan untuk menghitung komponen relevansi (v2).
+ * @type {Object.<string, Array<{text: string, relevantKeywords: string[]}>>}
+ */
 const QUESTION_BANK = {
   perilaku: [
-    'Ceritakan pengalaman Anda saat harus bekerja sama dalam tim yang sulit. Apa yang Anda lakukan dan bagaimana hasilnya?',
-    'Berikan contoh saat Anda menghadapi deadline yang sangat ketat. Bagaimana Anda mengatasinya?',
-    'Pernahkah Anda membuat kesalahan dalam pekerjaan atau kuliah? Ceritakan dan apa yang Anda pelajari?',
-    'Ceritakan situasi di mana Anda harus memimpin kelompok meskipun Anda bukan pemimpin resminya.',
-    'Berikan contoh bagaimana Anda menyesuaikan diri dengan perubahan mendadak dalam proyek.',
-    'Ceritakan saat Anda menerima kritik dari dosen atau atasan. Bagaimana respons Anda?',
-    'Pernahkah Anda memotivasi rekan yang tidak bersemangat? Apa yang Anda lakukan?',
-    'Ceritakan pengalaman Anda menyelesaikan konflik dengan anggota tim.',
-    'Berikan contoh saat Anda harus memprioritaskan beberapa tugas sekaligus.',
-    'Ceritakan proyek yang paling membanggakan selama kuliah dan kontribusi konkret Anda.'
+    {
+      text: 'Ceritakan pengalaman Anda saat harus bekerja sama dalam tim yang sulit. Apa yang Anda lakukan dan bagaimana hasilnya?',
+      relevantKeywords: ['tim', 'kerja sama', 'kolaborasi', 'anggota', 'konflik', 'diskusi', 'komunikasi', 'bersama']
+    },
+    {
+      text: 'Berikan contoh saat Anda menghadapi deadline yang sangat ketat. Bagaimana Anda mengatasinya?',
+      relevantKeywords: ['deadline', 'waktu', 'prioritas', 'tenggat', 'terbatas', 'efisien', 'jadwal', 'segera']
+    },
+    {
+      text: 'Pernahkah Anda membuat kesalahan dalam pekerjaan atau kuliah? Ceritakan dan apa yang Anda pelajari?',
+      relevantKeywords: ['kesalahan', 'salah', 'gagal', 'pelajaran', 'belajar', 'perbaikan', 'evaluasi', 'koreksi']
+    },
+    {
+      text: 'Ceritakan situasi di mana Anda harus memimpin kelompok meskipun Anda bukan pemimpin resminya.',
+      relevantKeywords: ['memimpin', 'pemimpin', 'inisiatif', 'kelompok', 'arahan', 'koordinasi', 'tanggung jawab', 'keputusan']
+    },
+    {
+      text: 'Berikan contoh bagaimana Anda menyesuaikan diri dengan perubahan mendadak dalam proyek.',
+      relevantKeywords: ['perubahan', 'adaptasi', 'fleksibel', 'mendadak', 'menyesuaikan', 'pivot', 'solusi', 'situasi baru']
+    },
+    {
+      text: 'Ceritakan saat Anda menerima kritik dari dosen atau atasan. Bagaimana respons Anda?',
+      relevantKeywords: ['kritik', 'masukan', 'feedback', 'respons', 'menerima', 'perbaikan', 'dosen', 'atasan']
+    },
+    {
+      text: 'Pernahkah Anda memotivasi rekan yang tidak bersemangat? Apa yang Anda lakukan?',
+      relevantKeywords: ['motivasi', 'semangat', 'rekan', 'mendukung', 'membantu', 'dorongan', 'inspirasi', 'positif']
+    },
+    {
+      text: 'Ceritakan pengalaman Anda menyelesaikan konflik dengan anggota tim.',
+      relevantKeywords: ['konflik', 'perselisihan', 'menyelesaikan', 'mediasi', 'damai', 'solusi', 'berbeda pendapat', 'kompromi']
+    },
+    {
+      text: 'Berikan contoh saat Anda harus memprioritaskan beberapa tugas sekaligus.',
+      relevantKeywords: ['prioritas', 'multitasking', 'tugas', 'urutan', 'penting', 'mendesak', 'manajemen', 'jadwal']
+    },
+    {
+      text: 'Ceritakan proyek yang paling membanggakan selama kuliah dan kontribusi konkret Anda.',
+      relevantKeywords: ['proyek', 'kontribusi', 'bangga', 'berhasil', 'peran', 'dampak', 'pencapaian', 'kuliah']
+    }
   ],
   teknis: [
-    'Ceritakan pengalaman Anda membangun sebuah fitur web dari nol. Teknologi apa yang Anda gunakan dan bagaimana hasilnya?',
-    'Berikan contoh saat Anda menemukan bug yang sulit. Bagaimana proses debugging Anda?',
-    'Ceritakan pengalaman mengoptimalkan performa sebuah halaman web. Apa yang Anda lakukan dan seberapa besar peningkatannya?',
-    'Pernahkah Anda melakukan code review atau review kode orang lain? Ceritakan prosesnya.',
-    'Ceritakan bagaimana Anda belajar teknologi baru yang dibutuhkan proyek dalam waktu singkat.',
-    'Berikan contoh saat Anda menerapkan prinsip responsive design. Apa tantangan utamanya?',
-    'Ceritakan pengalaman Anda bekerja dengan version control (Git) dalam tim.',
-    'Bagaimana Anda memastikan aksesibilitas (a11y) pada proyek web Anda? Beri contoh konkret.',
-    'Ceritakan saat Anda harus menulis dokumentasi teknis. Siapa audiensnya dan bagaimana pendekatannya?',
-    'Berikan contoh bagaimana Anda menangani error handling di aplikasi yang pernah Anda buat.'
+    {
+      text: 'Ceritakan pengalaman Anda membangun sebuah fitur web dari nol. Teknologi apa yang Anda gunakan dan bagaimana hasilnya?',
+      relevantKeywords: ['fitur', 'web', 'teknologi', 'html', 'css', 'javascript', 'framework', 'implementasi', 'build', 'deploy']
+    },
+    {
+      text: 'Berikan contoh saat Anda menemukan bug yang sulit. Bagaimana proses debugging Anda?',
+      relevantKeywords: ['bug', 'debug', 'error', 'console', 'trace', 'fix', 'masalah', 'investigasi', 'log', 'testing']
+    },
+    {
+      text: 'Ceritakan pengalaman mengoptimalkan performa sebuah halaman web. Apa yang Anda lakukan dan seberapa besar peningkatannya?',
+      relevantKeywords: ['performa', 'optimasi', 'loading', 'kecepatan', 'lighthouse', 'cache', 'compress', 'lazy', 'minify', 'score']
+    },
+    {
+      text: 'Pernahkah Anda melakukan code review atau review kode orang lain? Ceritakan prosesnya.',
+      relevantKeywords: ['code review', 'review', 'kode', 'feedback', 'pull request', 'komentar', 'refactor', 'standar', 'kualitas']
+    },
+    {
+      text: 'Ceritakan bagaimana Anda belajar teknologi baru yang dibutuhkan proyek dalam waktu singkat.',
+      relevantKeywords: ['belajar', 'teknologi baru', 'dokumentasi', 'tutorial', 'praktek', 'cepat', 'adaptasi', 'framework']
+    },
+    {
+      text: 'Berikan contoh saat Anda menerapkan prinsip responsive design. Apa tantangan utamanya?',
+      relevantKeywords: ['responsive', 'mobile', 'breakpoint', 'media query', 'flexbox', 'grid', 'tampilan', 'perangkat', 'layar']
+    },
+    {
+      text: 'Ceritakan pengalaman Anda bekerja dengan version control (Git) dalam tim.',
+      relevantKeywords: ['git', 'version control', 'branch', 'commit', 'merge', 'pull request', 'conflict', 'repository', 'github']
+    },
+    {
+      text: 'Bagaimana Anda memastikan aksesibilitas (a11y) pada proyek web Anda? Beri contoh konkret.',
+      relevantKeywords: ['aksesibilitas', 'a11y', 'aria', 'semantic', 'alt text', 'keyboard', 'screen reader', 'kontras', 'wcag']
+    },
+    {
+      text: 'Ceritakan saat Anda harus menulis dokumentasi teknis. Siapa audiensnya dan bagaimana pendekatannya?',
+      relevantKeywords: ['dokumentasi', 'readme', 'penjelasan', 'audiens', 'teknis', 'panduan', 'instruksi', 'jelas', 'terstruktur']
+    },
+    {
+      text: 'Berikan contoh bagaimana Anda menangani error handling di aplikasi yang pernah Anda buat.',
+      relevantKeywords: ['error handling', 'try catch', 'exception', 'validasi', 'pesan error', 'fallback', 'log', 'penanganan']
+    }
   ],
   hr: [
-    'Ceritakan satu kekuatan terbesar Anda dan bagaimana Anda menggunakannya dalam pekerjaan.',
-    'Di mana Anda melihat diri Anda lima tahun ke depan? Langkah konkret apa yang sudah Anda ambil?',
-    'Mengapa Anda tertarik dengan posisi Web Developer dan apa yang membuat Anda cocok untuk peran ini?',
-    'Ceritakan pengalaman magang atau kerja paruh waktu yang paling berkesan dan pelajaran yang Anda petik.',
-    'Bagaimana Anda menyeimbangkan kehidupan kuliah, proyek, dan kegiatan di luar akademik?',
-    'Ceritakan saat Anda mengambil inisiatif di luar tanggung jawab utama Anda.',
-    'Apa motivasi terbesar Anda memilih karier di bidang teknologi web?',
-    'Ceritakan pengalaman Anda mengelola waktu saat mengerjakan beberapa proyek paralel.',
-    'Bagaimana Anda mendefinisikan "kerja keras" dan beri contoh nyata penerapannya.',
-    'Ceritakan satu hal tentang diri Anda yang tidak terlihat dari CV tetapi relevan untuk posisi ini.'
+    {
+      text: 'Ceritakan satu kekuatan terbesar Anda dan bagaimana Anda menggunakannya dalam pekerjaan.',
+      relevantKeywords: ['kekuatan', 'keunggulan', 'kemampuan', 'skill', 'manfaat', 'kontribusi', 'efektif', 'keahlian']
+    },
+    {
+      text: 'Di mana Anda melihat diri Anda lima tahun ke depan? Langkah konkret apa yang sudah Anda ambil?',
+      relevantKeywords: ['rencana', 'karier', 'tujuan', 'goal', 'langkah', 'ambisi', 'pengembangan', 'masa depan', 'target']
+    },
+    {
+      text: 'Mengapa Anda tertarik dengan posisi Web Developer dan apa yang membuat Anda cocok untuk peran ini?',
+      relevantKeywords: ['web developer', 'tertarik', 'passion', 'cocok', 'alasan', 'motivasi', 'pengalaman', 'relevan', 'skill']
+    },
+    {
+      text: 'Ceritakan pengalaman magang atau kerja paruh waktu yang paling berkesan dan pelajaran yang Anda petik.',
+      relevantKeywords: ['magang', 'kerja', 'pengalaman', 'pelajaran', 'berkesan', 'industri', 'praktik', 'nyata', 'profesional']
+    },
+    {
+      text: 'Bagaimana Anda menyeimbangkan kehidupan kuliah, proyek, dan kegiatan di luar akademik?',
+      relevantKeywords: ['seimbang', 'manajemen waktu', 'kuliah', 'proyek', 'kegiatan', 'prioritas', 'jadwal', 'organisasi']
+    },
+    {
+      text: 'Ceritakan saat Anda mengambil inisiatif di luar tanggung jawab utama Anda.',
+      relevantKeywords: ['inisiatif', 'proaktif', 'di luar', 'tambahan', 'sukarela', 'inisiatif sendiri', 'ide', 'langkah']
+    },
+    {
+      text: 'Apa motivasi terbesar Anda memilih karier di bidang teknologi web?',
+      relevantKeywords: ['motivasi', 'alasan', 'teknologi', 'web', 'passion', 'minat', 'karier', 'pilihan', 'tujuan']
+    },
+    {
+      text: 'Ceritakan pengalaman Anda mengelola waktu saat mengerjakan beberapa proyek paralel.',
+      relevantKeywords: ['waktu', 'paralel', 'beberapa proyek', 'prioritas', 'efisien', 'deadline', 'jadwal', 'multitasking']
+    },
+    {
+      text: 'Bagaimana Anda mendefinisikan "kerja keras" dan beri contoh nyata penerapannya.',
+      relevantKeywords: ['kerja keras', 'dedikasi', 'usaha', 'contoh', 'nyata', 'disiplin', 'tekun', 'gigih', 'konsisten']
+    },
+    {
+      text: 'Ceritakan satu hal tentang diri Anda yang tidak terlihat dari CV tetapi relevan untuk posisi ini.',
+      relevantKeywords: ['kepribadian', 'karakter', 'unik', 'tidak terlihat', 'di balik cv', 'soft skill', 'sifat', 'relevan']
+    }
   ]
 };
 
@@ -183,23 +279,82 @@ function penaltyFillerWords(text) {
   return Math.min(10, totalHits * 3);
 }
 
+/* ============================================================
+   2b. FUNGSI RELEVANSI & ANTI-PENGULANGAN (v2)
+   ============================================================ */
+
+/**
+ * Menghitung skor relevansi jawaban terhadap pertanyaan.
+ * Setiap keyword yang ditemukan dalam teks (case-insensitive) menambah skor.
+ * Komponen ini mewakili 20% bobot dari skor akhir (20 poin dari skala 110).
+ * @param {string} text
+ * @param {string[]} keywords  — relevantKeywords dari objek pertanyaan
+ * @returns {number} skor 0-20
+ */
+function scoreRelevance(text, keywords) {
+  if (!keywords || keywords.length === 0) return 10; // netral jika tidak ada keywords
+  const lower = text.toLowerCase();
+  const hits  = keywords.filter(kw => lower.includes(kw.toLowerCase())).length;
+  // Proporsional: ≥3 keyword = nilai penuh (20)
+  return Math.min(20, Math.round((hits / 3) * 20));
+}
+
+/**
+ * Menghitung penalti pengulangan kata (anti-repetition).
+ * Jika rasio kata_unik / total_kata < 0.5, kena penalti dan ditandai.
+ * @param {string} text
+ * @returns {{ penalty: number, ratio: number, flagged: boolean }}
+ */
+function penaltyRepetition(text) {
+  const words = text.toLowerCase()
+                    .replace(/[^a-zA-Z\u00C0-\u024F\s]/g, '') // hapus tanda baca
+                    .split(/\s+/)
+                    .filter(w => w.length > 1);               // abaikan kata 1 huruf
+  if (words.length < 10) return { penalty: 0, ratio: 1, flagged: false }; // teks terlalu pendek, skip
+  const unique  = new Set(words);
+  const ratio   = unique.size / words.length;
+  const flagged = ratio < 0.5;
+  // Penalti proporsional: semakin rendah rasio, semakin besar penalti (maks 12)
+  const penalty = flagged ? Math.round((0.5 - ratio) * 24) : 0;
+  return { penalty: Math.min(12, penalty), ratio: Math.round(ratio * 100) / 100, flagged };
+}
+
 /**
  * Menghitung skor total dari sebuah jawaban.
+ * Menerima objek pertanyaan agar bisa menghitung relevansi (v2).
  * @param {string} text
- * @returns {{ total: number, situation: number, action: number, result: number, length: number, penalty: number }}
+ * @param {string[]} [keywords=[]]  — relevantKeywords dari pertanyaan saat ini
+ * @returns {{ total: number, situation: number, action: number, result: number,
+ *             length: number, relevance: number, penaltyFiller: number,
+ *             penaltyRep: number, repRatio: number, repFlagged: boolean }}
  */
-function calculateScore(text) {
-  const situation = scoreSituation(text);
-  const action    = scoreAction(text);
-  const result    = scoreResult(text);
-  const length    = scoreLength(text);
-  const penalty   = penaltyFillerWords(text);
+function calculateScore(text, keywords = []) {
+  const situation    = scoreSituation(text);
+  const action       = scoreAction(text);
+  const result       = scoreResult(text);
+  const length       = scoreLength(text);
+  const relevance    = scoreRelevance(text, keywords);
+  const penaltyFiller = penaltyFillerWords(text);
+  const rep          = penaltyRepetition(text);
 
-  // Total maks 90 (25+25+25+15) dikurangi penalti, lalu diskalakan ke 100
-  const raw   = situation + action + result + length - penalty;
-  const total = Math.max(0, Math.min(100, Math.round((raw / 90) * 100)));
+  // Maks mentah = 25+25+25+15+20 = 110; dikurangi penalti, diskalakan ke 100
+  const raw   = situation + action + result + length + relevance - penaltyFiller - rep.penalty;
+  const total = Math.max(0, Math.min(100, Math.round((raw / 110) * 100)));
 
-  return { total, situation, action, result, length, penalty };
+  return {
+    total,
+    situation,
+    action,
+    result,
+    length,
+    relevance,
+    penaltyFiller,
+    penaltyRep:    rep.penalty,
+    repRatio:      rep.ratio,
+    repFlagged:    rep.flagged,
+    // alias untuk kompatibilitas mundur
+    get penalty() { return this.penaltyFiller; },
+  };
 }
 
 /* ============================================================
@@ -218,8 +373,8 @@ function scoreClass(score) {
 }
 
 /**
- * Menghasilkan teks umpan balik lengkap dari hasil skor.
- * @param {{ total: number, situation: number, action: number, result: number, length: number, penalty: number }} scores
+ * Menghasilkan teks umpan balik lengkap dari hasil skor (v2: + relevansi & repetisi).
+ * @param {Object} scores  — hasil calculateScore()
  * @param {string} answerText
  * @returns {{ good: string[], bad: string[], tip: string }}
  */
@@ -256,14 +411,30 @@ function generateFeedback(scores, answerText) {
     bad.push(`Jawaban terlalu pendek (${wordCount} kata). Usahakan minimal 30–60 kata.`);
   }
 
+  // Relevansi (v2)
+  if (scores.relevance !== undefined) {
+    if (scores.relevance >= 14) {
+      good.push('Jawaban relevan dengan topik pertanyaan.');
+    } else if (scores.relevance < 7) {
+      bad.push('Jawaban kurang menyentuh topik pertanyaan. Coba gunakan kata kunci yang lebih sesuai.');
+    }
+  }
+
+  // Anti-pengulangan (v2)
+  if (scores.repFlagged) {
+    bad.push(`Jawaban banyak mengulang kata/kalimat (rasio kata unik: ${scores.repRatio}). Coba variasikan kosakata Anda.`);
+  }
+
   // Filler penalty
-  if (scores.penalty > 0) {
-    bad.push(`Terdeteksi kata pengisi (−${scores.penalty} poin). Hindari "pokoknya", "gitu deh", dll.`);
+  if (scores.penaltyFiller > 0) {
+    bad.push(`Terdeteksi kata pengisi (−${scores.penaltyFiller} poin). Hindari "pokoknya", "gitu deh", dll.`);
   }
 
   // Pilih satu tips konkret berdasarkan kelemahan utama
   let tip = '';
-  if (scores.result < 15) {
+  if (scores.repFlagged) {
+    tip = '💡 Tips: Hindari mengulang kata yang sama. Gunakan sinonim atau kalimat dengan struktur berbeda.';
+  } else if (scores.result < 15) {
     tip = '💡 Tips: Akhiri jawaban Anda dengan kalimat seperti "Hasilnya, nilai tim kami naik 20%" atau "Proyek selesai tepat waktu dan diterima klien."';
   } else if (scores.situation < 12) {
     tip = '💡 Tips: Mulai jawaban dengan frasa seperti "Waktu itu saya sedang mengerjakan proyek…" agar konteks lebih jelas.';
@@ -271,6 +442,8 @@ function generateFeedback(scores, answerText) {
     tip = '💡 Tips: Jelaskan langkah-langkah spesifik yang Anda ambil — "Saya mengerjakan bagian X, lalu saya mengoptimalkan Y."';
   } else if (wordCount < 30) {
     tip = '💡 Tips: Perluas jawaban Anda dengan detail tambahan tentang tantangan yang dihadapi dan solusi yang Anda pilih.';
+  } else if (scores.relevance !== undefined && scores.relevance < 10) {
+    tip = '💡 Tips: Pastikan jawaban Anda menyebutkan aspek-aspek yang ditanyakan secara langsung dalam pertanyaan.';
   } else {
     tip = '💡 Tips: Untuk skor lebih tinggi, tambahkan angka atau metrik konkret dalam bagian hasil jawaban Anda.';
   }
@@ -279,27 +452,72 @@ function generateFeedback(scores, answerText) {
 }
 
 /**
- * Membuat HTML untuk panel umpan balik.
+ * Membuat HTML kartu umpan balik yang MENETAP di chat.
+ * Kartu punya tombol lipat/buka (default terbuka) dan rincian skor per aspek.
  * @param {number} total
+ * @param {Object} scores   — hasil calculateScore() lengkap
  * @param {{ good: string[], bad: string[], tip: string }} feedback
- * @returns {string}
+ * @param {number} qIndex   — nomor pertanyaan (untuk id unik)
+ * @returns {string} HTML string
  */
-function buildFeedbackHTML(total, feedback) {
-  const cls  = scoreClass(total);
+function buildFeedbackHTML(total, scores, feedback, qIndex) {
+  const cls     = scoreClass(total);
+  const panelId = `fb-body-${qIndex}`;
+
+  // Rincian skor per aspek
+  const sitPct = Math.round((scores.situation / 25) * 100);
+  const actPct = Math.round((scores.action     / 25) * 100);
+  const resPct = Math.round((scores.result     / 25) * 100);
+  const lenPct = Math.round((scores.length     / 15) * 100);
+  const relPct = scores.relevance !== undefined ? Math.round((scores.relevance / 20) * 100) : null;
+
+  function miniBar(label, pct) {
+    const barCls = pct >= 70 ? 'score-hi' : pct >= 40 ? 'score-mid' : 'score-lo';
+    return `
+      <div class="fb-aspect-row">
+        <span class="fb-aspect-label">${label}</span>
+        <div class="fb-aspect-track">
+          <div class="fb-aspect-fill" style="width:${pct}%;background:${
+            pct >= 70 ? 'var(--clr-score-hi)' : pct >= 40 ? 'var(--clr-score-mid)' : 'var(--clr-score-lo)'
+          }"></div>
+        </div>
+        <span class="fb-aspect-val ${barCls}">${pct}%</span>
+      </div>`;
+  }
+
+  const aspectsHTML = `
+    <div class="fb-aspects">
+      ${miniBar('Situation/Task', sitPct)}
+      ${miniBar('Action',         actPct)}
+      ${miniBar('Result',         resPct)}
+      ${miniBar('Kelengkapan',    lenPct)}
+      ${relPct !== null ? miniBar('Relevansi', relPct) : ''}
+    </div>`;
+
   const goodHTML = feedback.good.length
     ? `<div class="fb-section"><div class="fb-label">✅ Yang Sudah Baik</div><div class="fb-text">${feedback.good.map(g => `• ${g}`).join('<br>')}</div></div>`
     : '';
   const badHTML  = feedback.bad.length
     ? `<div class="fb-section"><div class="fb-label">⚠️ Yang Perlu Diperbaiki</div><div class="fb-text">${feedback.bad.map(b => `• ${b}`).join('<br>')}</div></div>`
     : '';
-  const tipHTML  = `<div class="fb-section"><div class="fb-text">${feedback.tip}</div></div>`;
+  const tipHTML  = `<div class="fb-section fb-tip"><div class="fb-text">${feedback.tip}</div></div>`;
 
   return `
-    <div class="score-badge ${cls}">${total}/100</div>
-    ${goodHTML}
-    ${badHTML}
-    ${tipHTML}
-  `;
+    <div class="fb-card" data-panel="${panelId}">
+      <div class="fb-card__header">
+        <span class="score-badge ${cls}">${total}/100</span>
+        <button type="button" class="fb-toggle btn btn--ghost btn--sm"
+                aria-expanded="true" aria-controls="${panelId}">
+          Sembunyikan ▲
+        </button>
+      </div>
+      <div class="fb-card__body" id="${panelId}">
+        ${aspectsHTML}
+        ${goodHTML}
+        ${badHTML}
+        ${tipHTML}
+      </div>
+    </div>`;
 }
 
 /* ============================================================
@@ -407,6 +625,7 @@ function updateProgress() {
 
 /**
  * Agen mengajukan pertanyaan berikutnya setelah jeda singkat.
+ * questions[] sekarang berisi objek {text, relevantKeywords}.
  */
 function askNextQuestion() {
   updateProgress();
@@ -417,13 +636,13 @@ function askNextQuestion() {
     return;
   }
 
-  const question = state.questions[state.currentQ];
+  const qObj     = state.questions[state.currentQ]; // { text, relevantKeywords }
   const typingEl = addTypingIndicator();
 
   // Simulasi jeda mengetik (800 ms)
   setTimeout(() => {
     typingEl.remove();
-    addBubble('agent', `Pertanyaan ${state.currentQ + 1}: ${question}`);
+    addBubble('agent', `Pertanyaan ${state.currentQ + 1}: ${qObj.text}`);
     enableInput();
   }, 800);
 }
@@ -449,22 +668,22 @@ function disableInput() {
 }
 
 /**
- * Menangani pengiriman jawaban pengguna.
+ * Menangani pengiriman jawaban pengguna (v2).
+ * Kartu umpan balik kini disisipkan langsung ke chat window (menetap),
+ * bukan ke footer panel sementara.
  * @param {Event} e
  */
 function handleSubmit(e) {
   e.preventDefault();
-  const inputEl  = document.getElementById('user-input');
+  const inputEl   = document.getElementById('user-input');
   const warningEl = document.getElementById('input-warning');
-  const feedbackPanel = document.getElementById('feedback-panel');
-  const rawText  = inputEl.value;
-  const text     = rawText.trim();
+  const rawText   = inputEl.value;
+  const text      = rawText.trim();
   const wordCount = text.split(/\s+/).filter(w => w.length > 0).length;
 
   // Sembunyikan warning sebelumnya
   warningEl.hidden = true;
   warningEl.textContent = '';
-  feedbackPanel.hidden = true;
 
   // Validasi: kosong
   if (!text) {
@@ -487,30 +706,47 @@ function handleSubmit(e) {
   inputEl.value = '';
   disableInput();
 
-  // Hitung skor
-  const scores   = calculateScore(text);
+  // Ambil keywords dari pertanyaan saat ini
+  const qObj     = state.questions[state.currentQ]; // { text, relevantKeywords }
+  const keywords = qObj ? qObj.relevantKeywords : [];
+  const qIndex   = state.currentQ; // simpan sebelum increment
+
+  // Hitung skor (v2: teruskan keywords untuk relevansi)
+  const scores   = calculateScore(text, keywords);
   const feedback = generateFeedback(scores, text);
-  const fbHTML   = buildFeedbackHTML(scores.total, feedback);
+  const fbHTML   = buildFeedbackHTML(scores.total, scores, feedback, qIndex);
 
   // Simpan ke state
   state.scores.push({
     ...scores,
     answer:   text,
-    question: state.questions[state.currentQ],
+    question: qObj ? qObj.text : '',
   });
 
   state.currentQ++;
 
-  // Tampilkan umpan balik setelah jeda
+  // Sisipkan kartu umpan balik ke chat (MENETAP, tidak hilang otomatis)
   setTimeout(() => {
-    feedbackPanel.innerHTML = fbHTML;
-    feedbackPanel.hidden = false;
+    const fbLi = document.createElement('li');
+    fbLi.className = 'chat-feedback-item';
+    fbLi.innerHTML = fbHTML;
+    chatMessages.appendChild(fbLi);
+    fbLi.scrollIntoView({ behavior: 'smooth', block: 'end' });
 
-    // Pertanyaan berikutnya setelah umpan balik
-    setTimeout(() => {
-      feedbackPanel.hidden = true;
-      askNextQuestion();
-    }, 3500);
+    // Pasang event listener tombol lipat/buka pada kartu ini
+    fbLi.querySelector('.fb-toggle')?.addEventListener('click', function () {
+      const bodyId = this.getAttribute('aria-controls');
+      const bodyEl = document.getElementById(bodyId);
+      const isOpen = this.getAttribute('aria-expanded') === 'true';
+      if (bodyEl) {
+        bodyEl.hidden = isOpen;
+        this.setAttribute('aria-expanded', String(!isOpen));
+        this.textContent = isOpen ? 'Tampilkan ▼' : 'Sembunyikan ▲';
+      }
+    });
+
+    // Lanjut ke pertanyaan berikutnya setelah jeda singkat
+    setTimeout(askNextQuestion, 900);
   }, 400);
 }
 
@@ -529,7 +765,7 @@ function avg(arr) {
 }
 
 /**
- * Menampilkan layar ringkasan dengan grafik batang CSS.
+ * Menampilkan layar ringkasan dengan grafik batang CSS (v2: + bar Relevansi).
  */
 function showSummary() {
   const scores = state.scores;
@@ -538,10 +774,11 @@ function showSummary() {
   const totalAvg = avg(scores.map(s => s.total));
 
   // Rata-rata per aspek (dalam persen dari maks masing-masing)
-  const sitPct    = avg(scores.map(s => Math.round((s.situation / 25) * 100)));
-  const actPct    = avg(scores.map(s => Math.round((s.action     / 25) * 100)));
-  const resPct    = avg(scores.map(s => Math.round((s.result     / 25) * 100)));
-  const lenPct    = avg(scores.map(s => Math.round((s.length     / 15) * 100)));
+  const sitPct = avg(scores.map(s => Math.round((s.situation  / 25) * 100)));
+  const actPct = avg(scores.map(s => Math.round((s.action     / 25) * 100)));
+  const resPct = avg(scores.map(s => Math.round((s.result     / 25) * 100)));
+  const lenPct = avg(scores.map(s => Math.round((s.length     / 15) * 100)));
+  const relPct = avg(scores.map(s => Math.round(((s.relevance ?? 0) / 20) * 100)));
 
   // Update total skor
   const totalEl = document.getElementById('total-score-display');
@@ -557,7 +794,6 @@ function showSummary() {
     if (fill) fill.style.setProperty('--pct', pct);
     if (val)  val.textContent = `${pct}%`;
     if (val)  val.className   = 'bar-group__val ' + scoreClass(pct);
-    // Warna batang sesuai skor
     if (fill) fill.style.background = pct >= 70
       ? 'var(--clr-score-hi)'
       : pct >= 40
@@ -569,17 +805,26 @@ function showSummary() {
   setBar('fill-action',    'val-action',    actPct);
   setBar('fill-result',    'val-result',    resPct);
   setBar('fill-length',    'val-length',    lenPct);
+  setBar('fill-relevance', 'val-relevance', relPct); // v2: bar Relevansi
 
-  // Bangun log jawaban
+  // Bangun log jawaban (v2: skor per jawaban lebih lengkap)
   const logList = document.getElementById('answer-log-list');
   logList.innerHTML = '';
   scores.forEach((s, i) => {
-    const fb  = generateFeedback(s, s.answer);
-    const li  = document.createElement('li');
-    li.className = 'log-item';
-    li.innerHTML = `
-      <div class="log-item__q">Q${i + 1}: ${s.question}</div>
-      <div class="log-item__score ${scoreClass(s.total)}">Skor: ${s.total}/100</div>
+    const fb      = generateFeedback(s, s.answer);
+    const relPctQ = Math.round(((s.relevance ?? 0) / 20) * 100);
+    const li      = document.createElement('li');
+    li.className  = 'log-item';
+    li.innerHTML  = `
+      <div class="log-item__q">Pertanyaan ${i + 1}: ${s.question}</div>
+      <div class="log-item__score-row">
+        <span class="log-item__score ${scoreClass(s.total)}">Total: ${s.total}/100</span>
+        <span class="log-item__aspect">S/T: ${Math.round((s.situation/25)*100)}%</span>
+        <span class="log-item__aspect">A: ${Math.round((s.action/25)*100)}%</span>
+        <span class="log-item__aspect">R: ${Math.round((s.result/25)*100)}%</span>
+        <span class="log-item__aspect">Rel: ${relPctQ}%</span>
+        ${s.repFlagged ? '<span class="log-item__flag">🔁 Pengulangan</span>' : ''}
+      </div>
       <div class="log-item__tip">${fb.tip}</div>
     `;
     logList.appendChild(li);
@@ -705,8 +950,6 @@ function startSession(category, position) {
 
   // Bersihkan UI chat
   chatMessages.innerHTML = '';
-  const feedbackPanel = document.getElementById('feedback-panel');
-  if (feedbackPanel) feedbackPanel.hidden = true;
   const warningEl = document.getElementById('input-warning');
   if (warningEl) warningEl.hidden = true;
 

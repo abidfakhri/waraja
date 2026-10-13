@@ -358,34 +358,105 @@ a { color: var(--clr-primary); }
 }
 .bubble--user .bubble__sender { color: rgba(255,255,255,.75); }
 
-/* Feedback Panel */
-.feedback-panel {
-  margin: .5rem 1rem;
-  padding: 1rem 1.2rem;
+/* ── Feedback Card (menetap di chat, v2) ───────────────────── */
+
+/* chat-feedback-item: wrapper list item untuk kartu umpan balik */
+.chat-feedback-item {
+  margin: .25rem 0;
+  animation: bubbleIn .2s ease;
+}
+
+/* fb-card: kartu umpan balik yang menetap */
+.fb-card {
   background: var(--clr-surface2);
   border: 1px solid var(--clr-border);
+  border-left: 3px solid var(--clr-accent);
   border-radius: var(--radius);
   font-size: var(--fz-sm);
   line-height: 1.6;
+  overflow: hidden;
 }
-.feedback-panel .score-badge {
-  display: inline-block;
-  font-size: var(--fz-xl);
-  font-weight: 800;
-  margin-bottom: .5rem;
+
+/* Header kartu: skor + tombol lipat */
+.fb-card__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: .65rem 1rem;
+  border-bottom: 1px solid var(--clr-border);
 }
-.feedback-panel .fb-section { margin-top: .5rem; }
-.feedback-panel .fb-label {
+
+/* Body kartu */
+.fb-card__body {
+  padding: .75rem 1rem 1rem;
+}
+.fb-card__body[hidden] { display: none; }
+
+/* Tombol lipat/buka */
+.fb-toggle {
+  font-size: .7rem;
+  padding: .25rem .6rem;
+  border-radius: 99px;
+  white-space: nowrap;
+}
+
+/* Rincian skor per aspek */
+.fb-aspects {
+  display: flex;
+  flex-direction: column;
+  gap: .35rem;
+  margin-bottom: .75rem;
+  padding-bottom: .75rem;
+  border-bottom: 1px solid var(--clr-border);
+}
+.fb-aspect-row {
+  display: grid;
+  grid-template-columns: 100px 1fr 38px;
+  align-items: center;
+  gap: .5rem;
+}
+.fb-aspect-label { font-size: .72rem; color: var(--clr-muted); }
+.fb-aspect-track {
+  height: 6px;
+  background: var(--clr-surface);
+  border-radius: 99px;
+  overflow: hidden;
+}
+.fb-aspect-fill {
+  height: 100%;
+  border-radius: 99px;
+  transition: width .4s ease;
+}
+.fb-aspect-val { font-size: .72rem; font-weight: 700; text-align: right; }
+
+/* Sections dalam body */
+.fb-section { margin-top: .5rem; }
+.fb-tip { margin-top: .6rem; padding-top: .6rem; border-top: 1px dashed var(--clr-border); }
+.fb-label {
   font-weight: 700;
   text-transform: uppercase;
   font-size: .7rem;
   letter-spacing: .05em;
   color: var(--clr-muted);
+  margin-bottom: .2rem;
 }
-.feedback-panel .fb-text { color: var(--clr-text); }
-.score-hi { color: var(--clr-score-hi); }
+.fb-text { color: var(--clr-text); }
+
+/* score-badge: besar di header kartu */
+.score-badge {
+  display: inline-block;
+  font-size: var(--fz-xl);
+  font-weight: 800;
+  line-height: 1;
+}
+
+/* Warna skor */
+.score-hi  { color: var(--clr-score-hi); }
 .score-mid { color: var(--clr-score-mid); }
-.score-lo { color: var(--clr-score-lo); }
+.score-lo  { color: var(--clr-score-lo); }
+
+/* Footer feedback panel (tetap di HTML tapi tidak dipakai untuk konten baru) */
+.feedback-panel { display: none; }
 
 /* Input Row */
 .chat-footer { flex-shrink: 0; padding: .75rem 1rem 1rem; background: var(--clr-surface); border-top: 1px solid var(--clr-border); }
@@ -501,9 +572,33 @@ a { color: var(--clr-primary); }
   border-radius: var(--radius);
   font-size: var(--fz-sm);
 }
-.log-item__q { font-weight: 700; color: var(--clr-muted); margin-bottom: .3rem; }
-.log-item__score { font-weight: 800; margin-bottom: .3rem; }
-.log-item__tip { color: var(--clr-muted); font-style: italic; }
+.log-item__q { font-weight: 700; color: var(--clr-muted); margin-bottom: .4rem; }
+/* v2: baris skor per aspek */
+.log-item__score-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: .4rem .75rem;
+  margin-bottom: .3rem;
+}
+.log-item__score { font-weight: 800; }
+.log-item__aspect {
+  font-size: .72rem;
+  color: var(--clr-muted);
+  background: var(--clr-surface);
+  border: 1px solid var(--clr-border);
+  padding: .1rem .45rem;
+  border-radius: 99px;
+}
+.log-item__flag {
+  font-size: .72rem;
+  color: var(--clr-warn);
+  background: rgba(251,191,36,.1);
+  border: 1px solid rgba(251,191,36,.3);
+  padding: .1rem .45rem;
+  border-radius: 99px;
+}
+.log-item__tip { color: var(--clr-muted); font-style: italic; margin-top: .2rem; }
 
 /* Summary Actions */
 .summary-actions { display: flex; flex-direction: column; gap: .75rem; }
