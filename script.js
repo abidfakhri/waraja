@@ -29,128 +29,158 @@
 const QUESTION_BANK = {
   perilaku: [
     {
+      // P1: kerja sama tim
       text: 'Ceritakan pengalaman Anda saat harus bekerja sama dalam tim yang sulit. Apa yang Anda lakukan dan bagaimana hasilnya?',
-      relevantKeywords: ['tim', 'kerja sama', 'kolaborasi', 'anggota', 'konflik', 'diskusi', 'komunikasi', 'bersama']
+      relevantKeywords: ['tim', 'kerja sama', 'kolabora', 'anggota', 'konflik', 'diskusi', 'komunika', 'bersama', 'kelompok', 'rekan', 'sinergi', 'kerjasama', 'koordina', 'berbaur', 'solusi bersama']
     },
     {
+      // P2: deadline ketat
       text: 'Berikan contoh saat Anda menghadapi deadline yang sangat ketat. Bagaimana Anda mengatasinya?',
-      relevantKeywords: ['deadline', 'waktu', 'prioritas', 'tenggat', 'terbatas', 'efisien', 'jadwal', 'segera']
+      relevantKeywords: ['deadline', 'tenggat', 'waktu', 'terbatas', 'ketat', 'segera', 'mendesak', 'prioritas', 'jadwal', 'efisien', 'lembur', 'sprint', 'batas waktu', 'tertekan', 'cepat selesai']
     },
     {
+      // P3: kesalahan & belajar
       text: 'Pernahkah Anda membuat kesalahan dalam pekerjaan atau kuliah? Ceritakan dan apa yang Anda pelajari?',
-      relevantKeywords: ['kesalahan', 'salah', 'gagal', 'pelajaran', 'belajar', 'perbaikan', 'evaluasi', 'koreksi']
+      relevantKeywords: ['kesalahan', 'salah', 'gagal', 'kegagalan', 'pelajaran', 'belajar', 'perbaik', 'evaluasi', 'koreksi', 'sadar', 'akui', 'tanggung jawab', 'introspek', 'memperbaiki', 'hikmah']
     },
     {
+      // P4: memimpin tanpa jabatan
       text: 'Ceritakan situasi di mana Anda harus memimpin kelompok meskipun Anda bukan pemimpin resminya.',
-      relevantKeywords: ['memimpin', 'pemimpin', 'inisiatif', 'kelompok', 'arahan', 'koordinasi', 'tanggung jawab', 'keputusan']
+      relevantKeywords: ['memimpin', 'pimpin', 'pemimpin', 'leadership', 'inisiatif', 'kelompok', 'arahan', 'koordina', 'tanggung jawab', 'keputusan', 'pelopor', 'mengambil alih', 'ketua', 'andil', 'mengarahkan']
     },
     {
+      // P5: adaptasi perubahan
       text: 'Berikan contoh bagaimana Anda menyesuaikan diri dengan perubahan mendadak dalam proyek.',
-      relevantKeywords: ['perubahan', 'adaptasi', 'fleksibel', 'mendadak', 'menyesuaikan', 'pivot', 'solusi', 'situasi baru']
+      relevantKeywords: ['perubah', 'adaptasi', 'fleksibel', 'mendadak', 'menyesuai', 'pivot', 'tiba-tiba', 'situasi baru', 'berubah', 'kondisi', 'dinamis', 'penyesuaian', 'respons', 'kesiapan', 'tanggap']
     },
     {
+      // P6: menerima kritik
       text: 'Ceritakan saat Anda menerima kritik dari dosen atau atasan. Bagaimana respons Anda?',
-      relevantKeywords: ['kritik', 'masukan', 'feedback', 'respons', 'menerima', 'perbaikan', 'dosen', 'atasan']
+      relevantKeywords: ['kritik', 'masukan', 'feedback', 'saran', 'respons', 'menerima', 'perbaik', 'dosen', 'atasan', 'mentor', 'evaluasi', 'terbuka', 'lapang dada', 'catatan', 'koreksi']
     },
     {
+      // P7: memotivasi rekan
       text: 'Pernahkah Anda memotivasi rekan yang tidak bersemangat? Apa yang Anda lakukan?',
-      relevantKeywords: ['motivasi', 'semangat', 'rekan', 'mendukung', 'membantu', 'dorongan', 'inspirasi', 'positif']
+      relevantKeywords: ['motivasi', 'semangat', 'rekan', 'mendukung', 'membantu', 'dorongan', 'inspira', 'positif', 'bersemangat', 'membangkitkan', 'menyemangati', 'menginspirasi', 'teman', 'kolega', 'dukungan']
     },
     {
+      // P8: menyelesaikan konflik
       text: 'Ceritakan pengalaman Anda menyelesaikan konflik dengan anggota tim.',
-      relevantKeywords: ['konflik', 'perselisihan', 'menyelesaikan', 'mediasi', 'damai', 'solusi', 'berbeda pendapat', 'kompromi']
+      relevantKeywords: ['konflik', 'perselisihan', 'menyelesai', 'mediasi', 'damai', 'solusi', 'berbeda pendapat', 'kompromi', 'perdebatan', 'tengahi', 'rekonsiliasi', 'beda pandang', 'adu argumen', 'negosia', 'meredam']
     },
     {
+      // P9: prioritaskan banyak tugas
       text: 'Berikan contoh saat Anda harus memprioritaskan beberapa tugas sekaligus.',
-      relevantKeywords: ['prioritas', 'multitasking', 'tugas', 'urutan', 'penting', 'mendesak', 'manajemen', 'jadwal']
+      relevantKeywords: ['prioritas', 'prioritaskan', 'tugas', 'tanggung jawab', 'bersamaan', 'sekaligus', 'deadline', 'jadwal', 'urutan', 'penting', 'mendesak', 'membagi waktu', 'mengatur', 'manajemen', 'multitasking']
     },
     {
+      // P10: proyek membanggakan
       text: 'Ceritakan proyek yang paling membanggakan selama kuliah dan kontribusi konkret Anda.',
-      relevantKeywords: ['proyek', 'kontribusi', 'bangga', 'berhasil', 'peran', 'dampak', 'pencapaian', 'kuliah']
+      relevantKeywords: ['proyek', 'kontribusi', 'bangga', 'berhasil', 'peran', 'dampak', 'pencapaian', 'kuliah', 'prestasi', 'karya', 'hasil nyata', 'andil', 'sumbangan', 'membangun', 'mengerjakan']
     }
   ],
   teknis: [
     {
+      // T1: membangun fitur web
       text: 'Ceritakan pengalaman Anda membangun sebuah fitur web dari nol. Teknologi apa yang Anda gunakan dan bagaimana hasilnya?',
-      relevantKeywords: ['fitur', 'web', 'teknologi', 'html', 'css', 'javascript', 'framework', 'implementasi', 'build', 'deploy']
+      relevantKeywords: ['fitur', 'web', 'teknologi', 'html', 'css', 'javascript', 'framework', 'implementasi', 'build', 'deploy', 'dari nol', 'membuat', 'mengembangkan', 'aplikasi', 'antarmuka']
     },
     {
+      // T2: bug & debugging
       text: 'Berikan contoh saat Anda menemukan bug yang sulit. Bagaimana proses debugging Anda?',
-      relevantKeywords: ['bug', 'debug', 'error', 'console', 'trace', 'fix', 'masalah', 'investigasi', 'log', 'testing']
+      relevantKeywords: ['bug', 'debug', 'error', 'console', 'trace', 'fix', 'masalah', 'investigasi', 'log', 'testing', 'breakpoint', 'inspect', 'menemukan', 'penyebab', 'memperbaiki']
     },
     {
+      // T3: optimasi performa
       text: 'Ceritakan pengalaman mengoptimalkan performa sebuah halaman web. Apa yang Anda lakukan dan seberapa besar peningkatannya?',
-      relevantKeywords: ['performa', 'optimasi', 'loading', 'kecepatan', 'lighthouse', 'cache', 'compress', 'lazy', 'minify', 'score']
+      relevantKeywords: ['performa', 'optimasi', 'optimalkan', 'loading', 'kecepatan', 'lighthouse', 'cache', 'compress', 'lazy', 'minify', 'score', 'peningkatan', 'lebih cepat', 'ringan', 'efisien']
     },
     {
+      // T4: code review
       text: 'Pernahkah Anda melakukan code review atau review kode orang lain? Ceritakan prosesnya.',
-      relevantKeywords: ['code review', 'review', 'kode', 'feedback', 'pull request', 'komentar', 'refactor', 'standar', 'kualitas']
+      relevantKeywords: ['code review', 'review', 'kode', 'feedback', 'pull request', 'komentar', 'refactor', 'standar', 'kualitas', 'mereview', 'mengevaluasi', 'saran kode', 'merge', 'approval', 'catatan']
     },
     {
+      // T5: belajar teknologi baru
       text: 'Ceritakan bagaimana Anda belajar teknologi baru yang dibutuhkan proyek dalam waktu singkat.',
-      relevantKeywords: ['belajar', 'teknologi baru', 'dokumentasi', 'tutorial', 'praktek', 'cepat', 'adaptasi', 'framework']
+      relevantKeywords: ['belajar', 'teknologi baru', 'dokumentasi', 'tutorial', 'praktek', 'cepat', 'adaptasi', 'framework', 'mempelajari', 'eksplorasi', 'mandiri', 'singkat', 'menguasai', 'mencoba', 'riset']
     },
     {
+      // T6: responsive design
       text: 'Berikan contoh saat Anda menerapkan prinsip responsive design. Apa tantangan utamanya?',
-      relevantKeywords: ['responsive', 'mobile', 'breakpoint', 'media query', 'flexbox', 'grid', 'tampilan', 'perangkat', 'layar']
+      relevantKeywords: ['responsif', 'responsive', 'mobile', 'breakpoint', 'media query', 'flexbox', 'grid', 'tampilan', 'perangkat', 'layar', 'adaptif', 'ukuran layar', 'tablet', 'ponsel', 'menyesuaikan tampilan']
     },
     {
+      // T7: version control / git
       text: 'Ceritakan pengalaman Anda bekerja dengan version control (Git) dalam tim.',
-      relevantKeywords: ['git', 'version control', 'branch', 'commit', 'merge', 'pull request', 'conflict', 'repository', 'github']
+      relevantKeywords: ['git', 'version control', 'branch', 'commit', 'merge', 'pull request', 'conflict', 'repository', 'github', 'gitlab', 'checkout', 'rebase', 'push', 'clone', 'kolaborasi kode']
     },
     {
+      // T8: aksesibilitas
       text: 'Bagaimana Anda memastikan aksesibilitas (a11y) pada proyek web Anda? Beri contoh konkret.',
-      relevantKeywords: ['aksesibilitas', 'a11y', 'aria', 'semantic', 'alt text', 'keyboard', 'screen reader', 'kontras', 'wcag']
+      relevantKeywords: ['aksesibilitas', 'a11y', 'aria', 'semantik', 'semantic', 'alt', 'keyboard', 'screen reader', 'kontras', 'wcag', 'difabel', 'label', 'fokus', 'tabindex', 'role']
     },
     {
+      // T9: dokumentasi teknis
       text: 'Ceritakan saat Anda harus menulis dokumentasi teknis. Siapa audiensnya dan bagaimana pendekatannya?',
-      relevantKeywords: ['dokumentasi', 'readme', 'penjelasan', 'audiens', 'teknis', 'panduan', 'instruksi', 'jelas', 'terstruktur']
+      relevantKeywords: ['dokumentasi', 'readme', 'penjelasan', 'audiens', 'teknis', 'panduan', 'instruksi', 'jelas', 'terstruktur', 'menulis', 'wiki', 'deskripsi', 'petunjuk', 'referensi', 'spesifikasi']
     },
     {
+      // T10: error handling
       text: 'Berikan contoh bagaimana Anda menangani error handling di aplikasi yang pernah Anda buat.',
-      relevantKeywords: ['error handling', 'try catch', 'exception', 'validasi', 'pesan error', 'fallback', 'log', 'penanganan']
+      relevantKeywords: ['error', 'handling', 'try', 'catch', 'exception', 'validasi', 'pesan error', 'fallback', 'log', 'penanganan', 'throw', 'gagal', 'menangani', 'percobaan', 'keamanan']
     }
   ],
   hr: [
     {
+      // H1: kekuatan terbesar
       text: 'Ceritakan satu kekuatan terbesar Anda dan bagaimana Anda menggunakannya dalam pekerjaan.',
-      relevantKeywords: ['kekuatan', 'keunggulan', 'kemampuan', 'skill', 'manfaat', 'kontribusi', 'efektif', 'keahlian']
+      relevantKeywords: ['kekuatan', 'keunggulan', 'kemampuan', 'skill', 'manfaat', 'kontribusi', 'efektif', 'keahlian', 'kelebihan', 'kuat', 'andalan', 'potensi', 'kompetensi', 'mengandalkan', 'menonjol']
     },
     {
+      // H2: rencana lima tahun
       text: 'Di mana Anda melihat diri Anda lima tahun ke depan? Langkah konkret apa yang sudah Anda ambil?',
-      relevantKeywords: ['rencana', 'karier', 'tujuan', 'goal', 'langkah', 'ambisi', 'pengembangan', 'masa depan', 'target']
+      relevantKeywords: ['rencana', 'karier', 'tujuan', 'goal', 'langkah', 'ambisi', 'pengembangan', 'masa depan', 'target', 'lima tahun', 'visi', 'impian', 'cita-cita', 'berkembang', 'meningkat']
     },
     {
+      // H3: alasan tertarik web developer
       text: 'Mengapa Anda tertarik dengan posisi Web Developer dan apa yang membuat Anda cocok untuk peran ini?',
-      relevantKeywords: ['web developer', 'tertarik', 'passion', 'cocok', 'alasan', 'motivasi', 'pengalaman', 'relevan', 'skill']
+      relevantKeywords: ['web developer', 'tertarik', 'passion', 'cocok', 'alasan', 'motivasi', 'pengalaman', 'relevan', 'skill', 'minat', 'sesuai', 'latar belakang', 'memenuhi syarat', 'ketertarikan', 'pilihan']
     },
     {
+      // H4: pengalaman magang / kerja
       text: 'Ceritakan pengalaman magang atau kerja paruh waktu yang paling berkesan dan pelajaran yang Anda petik.',
-      relevantKeywords: ['magang', 'kerja', 'pengalaman', 'pelajaran', 'berkesan', 'industri', 'praktik', 'nyata', 'profesional']
+      relevantKeywords: ['magang', 'internship', 'kerja', 'paruh waktu', 'pengalaman', 'pelajaran', 'berkesan', 'industri', 'praktik', 'nyata', 'profesional', 'lapangan', 'bekerja', 'perusahaan', 'lingkungan kerja']
     },
     {
+      // H5: menyeimbangkan kuliah & kegiatan
       text: 'Bagaimana Anda menyeimbangkan kehidupan kuliah, proyek, dan kegiatan di luar akademik?',
-      relevantKeywords: ['seimbang', 'manajemen waktu', 'kuliah', 'proyek', 'kegiatan', 'prioritas', 'jadwal', 'organisasi']
+      relevantKeywords: ['seimbang', 'menyeimbang', 'manajemen waktu', 'kuliah', 'proyek', 'kegiatan', 'prioritas', 'jadwal', 'organisasi', 'membagi', 'mengatur', 'efisien', 'disiplin', 'waktu luang', 'produktif']
     },
     {
+      // H6: inisiatif di luar tanggung jawab
       text: 'Ceritakan saat Anda mengambil inisiatif di luar tanggung jawab utama Anda.',
-      relevantKeywords: ['inisiatif', 'proaktif', 'di luar', 'tambahan', 'sukarela', 'inisiatif sendiri', 'ide', 'langkah']
+      relevantKeywords: ['inisiatif', 'proaktif', 'di luar', 'tambahan', 'sukarela', 'ide', 'langkah', 'ekstra', 'tanpa diminta', 'mendahului', 'mengambil', 'kontribusi lebih', 'relawan', 'spontan', 'mandiri']
     },
     {
+      // H7: motivasi memilih karier web
       text: 'Apa motivasi terbesar Anda memilih karier di bidang teknologi web?',
-      relevantKeywords: ['motivasi', 'alasan', 'teknologi', 'web', 'passion', 'minat', 'karier', 'pilihan', 'tujuan']
+      relevantKeywords: ['motivasi', 'alasan', 'teknologi', 'web', 'passion', 'minat', 'karier', 'pilihan', 'tujuan', 'semangat', 'mendorong', 'tertarik', 'memilih', 'bidang', 'masa depan']
     },
     {
+      // H8: mengelola banyak proyek paralel
       text: 'Ceritakan pengalaman Anda mengelola waktu saat mengerjakan beberapa proyek paralel.',
-      relevantKeywords: ['waktu', 'paralel', 'beberapa proyek', 'prioritas', 'efisien', 'deadline', 'jadwal', 'multitasking']
+      relevantKeywords: ['waktu', 'paralel', 'beberapa proyek', 'prioritas', 'efisien', 'deadline', 'jadwal', 'multitasking', 'mengelola', 'mengatur', 'membagi', 'bersamaan', 'sekaligus', 'produktif', 'disiplin']
     },
     {
+      // H9: definisi kerja keras
       text: 'Bagaimana Anda mendefinisikan "kerja keras" dan beri contoh nyata penerapannya.',
-      relevantKeywords: ['kerja keras', 'dedikasi', 'usaha', 'contoh', 'nyata', 'disiplin', 'tekun', 'gigih', 'konsisten']
+      relevantKeywords: ['kerja keras', 'dedikasi', 'usaha', 'contoh', 'nyata', 'disiplin', 'tekun', 'gigih', 'konsisten', 'bersungguh', 'ulet', 'pantang menyerah', 'rajin', 'serius', 'determinasi']
     },
     {
+      // H10: hal tersembunyi di balik CV
       text: 'Ceritakan satu hal tentang diri Anda yang tidak terlihat dari CV tetapi relevan untuk posisi ini.',
-      relevantKeywords: ['kepribadian', 'karakter', 'unik', 'tidak terlihat', 'di balik cv', 'soft skill', 'sifat', 'relevan']
+      relevantKeywords: ['kepribadian', 'karakter', 'unik', 'tidak terlihat', 'soft skill', 'sifat', 'relevan', 'di balik', 'tersembunyi', 'nilai lebih', 'kebiasaan', 'sikap', 'hobi relevan', 'personal', 'kepribadian unik']
     }
   ]
 };
@@ -294,8 +324,9 @@ function penaltyFillerWords(text) {
 function scoreRelevance(text, keywords) {
   if (!keywords || keywords.length === 0) return 10; // netral jika tidak ada keywords
   const lower = text.toLowerCase();
+  // Cocokkan dengan substring (kata dasar) — 'prioritas' juga cocok dengan 'prioritaskan'
   const hits  = keywords.filter(kw => lower.includes(kw.toLowerCase())).length;
-  // Proporsional: ≥3 keyword = nilai penuh (20)
+  // ≥3 kecocokan = skor penuh (20).  Formula: min(20, hits/3 × 20)
   return Math.min(20, Math.round((hits / 3) * 20));
 }
 
@@ -412,12 +443,15 @@ function generateFeedback(scores, answerText) {
   }
 
   // Relevansi (v2)
+  // Threshold "kurang menyentuh" hanya bila relevansi < 34% dari maks (< 7 dari 20)
   if (scores.relevance !== undefined) {
     if (scores.relevance >= 14) {
       good.push('Jawaban relevan dengan topik pertanyaan.');
     } else if (scores.relevance < 7) {
+      // < 34% — benar-benar tidak menyentuh topik
       bad.push('Jawaban kurang menyentuh topik pertanyaan. Coba gunakan kata kunci yang lebih sesuai.');
     }
+    // antara 7–13: tidak diberi pesan, dianggap cukup relevan
   }
 
   // Anti-pengulangan (v2)
